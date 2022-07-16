@@ -25,7 +25,6 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding = _binding!!
 
-
         return binding.root
     }
 
@@ -33,7 +32,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.play.setOnClickListener {
-            print("fuck")
             findNavController().navigate(R.id.action_homeFragment_to_gameFragment)
         }
     }
