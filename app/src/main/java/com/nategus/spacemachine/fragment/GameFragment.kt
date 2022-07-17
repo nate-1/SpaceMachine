@@ -44,11 +44,42 @@ class GameFragment : Fragment() {
     }
 
     fun setUpGameBoard() {
+
+
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.item_slot1, SwitchesFragment())
-        transaction.replace(R.id.item_slot2, ButtonFragment())
+
+        var listRandNb: List<Int> = emptyList()
+        for (i in 1..4) {
+
+            val fragmentContainerId = when (i) {
+                1 -> R.id.item_slot1
+                2 -> R.id.item_slot2
+                3 -> R.id.item_slot3
+                4 -> R.id.item_slot4
+                else -> 0
+            }
+
+            var randval: Int
+            do {
+                randval = (1..4).random()
+            } while (listRandNb.contains(randval))
+            listRandNb += randval
+
+            val fragment = when (randval) {
+                1 -> ButtonFragment()
+                2 -> RadioButtonFragment()
+                3 -> SliderFragment()
+                4 -> SwitchesFragment()
+                else -> ButtonFragment()
+            }
+
+            println("hey " + fragmentContainerId + " " + fragment::class )
+
+            transaction.replace(fragmentContainerId, fragment)
+        }
 
         transaction.commit()
+
     }
 
     companion object {

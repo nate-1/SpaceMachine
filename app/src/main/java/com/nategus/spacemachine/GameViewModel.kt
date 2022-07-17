@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
-    val wave = MutableLiveData<Int>(0)
+    val wave = MutableLiveData<Int>(0) // number of wave in then round
+    val round = MutableLiveData<Int>(0)
 
     val element = MutableLiveData<List<Element>>(null)
 
