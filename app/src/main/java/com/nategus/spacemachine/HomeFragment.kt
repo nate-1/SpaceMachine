@@ -1,4 +1,4 @@
-package com.nategus.spacemachine.fragment
+package com.nategus.spacemachine
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

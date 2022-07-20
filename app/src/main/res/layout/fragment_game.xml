@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragment.GameFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".game.GameFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="100"
@@ -24,51 +25,47 @@
         android:layout_height="0dp"
         android:layout_weight="60"
         android:weightSum="100"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/switch_recycler_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/button_recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="50"
-            android:weightSum="100"
-            android:orientation="horizontal">
-            <FrameLayout
-                android:id="@+id/item_slot1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50">
-            </FrameLayout>
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">>
+        </androidx.recyclerview.widget.RecyclerView>
 
-            <FrameLayout
-                android:id="@+id/item_slot2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50">
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="50"
-            android:weightSum="100"
-            android:orientation="horizontal">
-            <FrameLayout
-                android:id="@+id/item_slot3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50">
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/item_slot4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="50">
-            </FrameLayout>
-
-        </LinearLayout>
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 
