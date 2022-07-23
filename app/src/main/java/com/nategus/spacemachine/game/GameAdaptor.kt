@@ -5,17 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nategus.spacemachine.Element
 import com.nategus.spacemachine.ElementType
 import com.nategus.spacemachine.R
 
-class SwitchAdaptor(private val element: List<Element>, private val onChange: () -> Any): RecyclerView.Adapter<SwitchAdaptor.ViewHolder>() {
+class SwitchAdaptor(private val element: List<Element>, private val onChange: (Int, Boolean) -> Unit): RecyclerView.Adapter<SwitchAdaptor.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val label = view.findViewById<TextView>(R.id.switch_title)
+            val switch = view.findViewById<SwitchCompat>(R.id.switch_element)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,6 +33,10 @@ class SwitchAdaptor(private val element: List<Element>, private val onChange: ()
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.label.text = element[position].name
+
+        holder.switch.setOnCheckedChangeListener { _, isChecked ->
+            onChange(position, isChecked)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -37,7 +44,7 @@ class SwitchAdaptor(private val element: List<Element>, private val onChange: ()
     }
 }
 
-class ButtonAdaptor(private val element: List<Element>, private val onChange: () -> Any): RecyclerView.Adapter<ButtonAdaptor.ViewHolder>() {
+class ButtonAdaptor(private val element: List<Element>, private val onChange: (Int) -> Unit): RecyclerView.Adapter<ButtonAdaptor.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -56,6 +63,11 @@ class ButtonAdaptor(private val element: List<Element>, private val onChange: ()
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.button.text = element[position].name
+
+        holder.button.setOnClickListener{
+            onChange(position)
+        }
+
     }
 
     override fun getItemCount(): Int {

@@ -8,5 +8,5 @@ enum class ElementType {
 data class Element (
     val id: Int,
     val name: String,
-    val value: Boolean
+    var value: Boolean
 )
