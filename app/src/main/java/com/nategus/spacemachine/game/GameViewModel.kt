@@ -10,8 +10,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val wave = MutableLiveData<Int>(0) // number of wave in then round
     val round = MutableLiveData<Int>(0)
 
-    val buttons = MutableLiveData<Element>(null)
-    val switches = MutableLiveData<Element>(null)
+    val buttons = MutableLiveData<List<Element>>(null)
+    val switches = MutableLiveData<List<Element>>(null)
 
     val numberOfError = MutableLiveData<Int>(0)
 }
