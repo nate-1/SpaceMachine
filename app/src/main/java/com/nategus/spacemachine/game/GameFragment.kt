@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import com.google.android.flexbox.*
 import com.nategus.spacemachine.Element
 import com.nategus.spacemachine.databinding.FragmentGameBinding
@@ -22,9 +21,12 @@ class GameFragment : Fragment() {
     private lateinit var supportFragmentManager: FragmentManager
     private var _supportFragmentManager: FragmentManager? = null
 
-    private val gameViewModel: GameViewModel by activityViewModels()
+    //private val gameViewModel: GameViewModel by activityViewModels()
 
     private var usedTitles: List<String> = emptyList()
+
+    private var buttons: MutableList<Element> = emptyList<Element>().toMutableList()
+    private var switches: MutableList<Element> = emptyList<Element>().toMutableList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +44,16 @@ class GameFragment : Fragment() {
         supportFragmentManager = _supportFragmentManager!!
 
         setUpGameBoard()
-
         return binding.root
     }
 
-    fun setUpGameBoard() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val switches: MutableList<Element> = emptyList<Element>().toMutableList()
-        val buttons: MutableList<Element> = emptyList<Element>().toMutableList()
+        generateAction()
+    }
+
+    fun setUpGameBoard() {
 
         for(i in (1..4)) {
             switches += Element(0, getTitle(),false)
@@ -58,8 +62,7 @@ class GameFragment : Fragment() {
 
         println(switches)
 
-        gameViewModel.switches.postValue(switches)
-        gameViewModel.buttons.postValue(buttons)
+
 
         binding.switchRecyclerView.adapter = SwitchAdaptor(switches) { position, isChecked ->
             switches[position].value = isChecked
@@ -80,19 +83,17 @@ class GameFragment : Fragment() {
     }
 
     fun generateAction() {
+        println("in generateAction")
         val typeRand = (1..2).random()
-        val listToGetFrom: List<Element>? = when(typeRand) {
-            1 -> gameViewModel.switches.value
-            2 -> gameViewModel.buttons.value
-
-            else -> gameViewModel.buttons.value
-        }
-
-        if(listToGetFrom == null) {
-                return
+        val listToGetFrom: List<Element> = when(typeRand) {
+            1 -> switches
+            2 -> buttons
+            else -> return
         }
 
         val element = listToGetFrom.random()
+
+        println(element)
 
         var instruction = ""
         if(typeRand == 1) {
@@ -102,6 +103,8 @@ class GameFragment : Fragment() {
         else if(typeRand == 2) {
             instruction = "${instructionSentences.random()} press the ${element.name}"
         }
+
+        println(instruction)
 
         binding.instructionLabel.text = instruction
     }
