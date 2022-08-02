@@ -13,6 +13,7 @@ import com.nategus.spacemachine.databinding.FragmentGameBinding
 
 val titles: List<String> = listOf("cymitharra", "tonsus", "delphinus", "tursio", "Athenae", "Patrae", "aperio", "declinatio", "canis", "flos", "Roma", "Lutetia", "Londinium", "noceo", "nocere", "quisquiliae", "Neapolis", "Antium", "Corinthus", "bellum", "eicio", "gnome", "haruspex", "icon", "moveo", "aniba", "oleum", "speculum", "utinam", "xiphias", "zelus", "porcus_marinus", "Graecia", "operio", "autem", "bos", "helium", "aut", "androgynus", "bovinus", "draco", "equus", "bellicus", "zodiacus", "eques", "formica", "gallina", "porcus", "guerra", "lycophthalmus", "annihilo", "mare", "adalligo", "Aegyptus", "Italia", "Graecus", "tonsor", "oeconomia", "caulis", "homonymus", "illino", "decoctum", "folium", "amicus", "O", "decoquo", "illitus", "sucus", "efficax", "caninus", "sativus", "epiphora", "cauliculus", "tormina", "ulcus", "fimum", "sarcasmus", "caprinus", "vomitio", "inclino", "duo", "tres", "quattuor", "quinque", "primus", "tripus", "septem", "ligatura", "anthropophagus", "octo", "octavus", "unio", "novem", "decem", "chiliometrum", "epigramma", "centum", "mille", "quintus", "nox", "quartus", "tertius", "macropus", "septimus", "homo", "nonus", "hippotoxotae", "synonymum", "Iaponia", "phthir", "diphthongus", "ab", "abdo", "abeo", "abhinc", "abicio", "abigo", "aboleo", "abscedo", "sol", "absens", "absisto", "absolvo", "abstinens", "abstineo", "abstuli", "prior", "novies", "smaragdus", "absum", "absurdus", "prae", "abundo", "Tocio", "frater", "eo", "accedo", "res", "secundus", "accendo", "sextus", "quincuplex", "accido", "simplex", "Hoccaido", "Ocinava", "beryllium", "accipio", "Zoroastreus", "Zopyriatim", "lithium", "accommodo", "caerimonia", "dies_Solis", "dies_Lunae", "dies_Martis", "uranium", "Mars", "nex", "accumbo", "Kalendae", "hydrogenium", "Iuppiter", "nux", "accuso", "palladium", "pirata", "acer", "Venus", "terbium", "Saturnus", "homunculus", "sum", "actinium", "Pluto", "daemon", "acerbus", "borum", "volcanus", "diabolus", "magnesium", "Mercurius", "gladius", "acervus", "Achaicus", "ununseptium", "Iuno", "elementum", "cupido", "ignis", "vanitas", "manatus", "neon", "achates", "Demeter", "lacrimo", "Acheron", "argon", "luna", "Minerva", "Achilles", "ununoctium", "lupus", "radon", "ununbium", "ununhexium", "ununpentium", "ununquadium", "acies", "nix", "cornix", "Kyotum", "leo", "Argentina", "Nara", "Ciusium", "unununium", "ununtrium", "tellurium", "barium", "platinum", "berkelium", "Nagasacium", "Fusius", "nomas", "Vindobona", "nobelium", "nomen", "Meacum", "Osaca", "Hirosima", "acriter", "cadmium", "orca", "Varsovia", "Hieus", "Lotharingia", "neptunium")
 val instructionSentences: List<String> = listOf("I think you should", "You gotta", "You better", "You probably should")
+const val LIST_ITEM_SIZE: Int = 4
 class GameFragment : Fragment() {
 
     private lateinit var binding: FragmentGameBinding
@@ -28,6 +29,7 @@ class GameFragment : Fragment() {
     private var buttons: MutableList<Element> = emptyList<Element>().toMutableList()
     private var switches: MutableList<Element> = emptyList<Element>().toMutableList()
 
+    private var currentElementId: Int = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -55,21 +57,22 @@ class GameFragment : Fragment() {
 
     fun setUpGameBoard() {
 
-        for(i in (1..4)) {
-            switches += Element(0, getTitle(),false)
-            buttons += Element(0, getTitle(), false)
+        for(i in (1..LIST_ITEM_SIZE)) {
+            switches += Element(i, getTitle(),false)
+            buttons += Element(i+LIST_ITEM_SIZE, getTitle(), false)
         }
 
-        println(switches)
-
-
-
         binding.switchRecyclerView.adapter = SwitchAdaptor(switches) { position, isChecked ->
-            switches[position].value = isChecked
+            val el = switches[position]
+            el.value = isChecked
+
+            checkAction(el)
         }
 
         binding.buttonRecyclerView.adapter = ButtonAdaptor(buttons) {
+            val el = buttons[it]
 
+            checkAction(el)
         }
 
         // https://stackoverflow.com/questions/30007956/how-to-center-items-of-a-recyclerview
@@ -83,7 +86,6 @@ class GameFragment : Fragment() {
     }
 
     fun generateAction() {
-        println("in generateAction")
         val typeRand = (1..2).random()
         val listToGetFrom: List<Element> = when(typeRand) {
             1 -> switches
@@ -106,7 +108,14 @@ class GameFragment : Fragment() {
 
         println(instruction)
 
+        currentElementId = element.id
         binding.instructionLabel.text = instruction
+    }
+
+    fun checkAction(el: Element) {
+        if(el.id == currentElementId) {
+            generateAction()
+        }
     }
 
     fun getTitle(): String {
