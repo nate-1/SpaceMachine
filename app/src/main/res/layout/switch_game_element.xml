@@ -10,7 +10,7 @@
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch_element"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleX="1.5"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:text="HEY Man"
-        android:textSize="15sp"
-        android:textColor="@color/black" />
+        android:textSize="20sp"
+        android:textColor="@color/white" />
 
 </LinearLayout>
