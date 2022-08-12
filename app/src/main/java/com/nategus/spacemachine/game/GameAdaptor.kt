@@ -18,7 +18,7 @@ class SwitchAdaptor(private val element: List<Element>, private val onChange: (I
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val label = view.findViewById<TextView>(R.id.switch_title)
-            val switch = view.findViewById<SwitchCompat>(R.id.switch_element)
+        val switch = view.findViewById<SwitchCompat>(R.id.switch_element)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,8 +31,9 @@ class SwitchAdaptor(private val element: List<Element>, private val onChange: (I
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        holder.label.text = element[position].name
+        val el = element[position]
+        holder.label.text = el.name
+        holder.switch.isChecked = el.value
 
         holder.switch.setOnCheckedChangeListener { _, isChecked ->
             onChange(position, isChecked)
