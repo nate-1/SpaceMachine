@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavDestination
-import androidx.navigation.fragment.findNavController
 import com.google.android.flexbox.*
 import com.nategus.spacemachine.Element
 import com.nategus.spacemachine.databinding.FragmentGameBinding
-import kotlin.random.Random
 
 val titles: List<String> = listOf("cymitharra", "tonsus", "delphinus", "tursio", "Athenae", "Patrae", "aperio", "declinatio", "canis", "flos", "Roma", "Lutetia", "Londinium", "noceo", "nocere", "quisquiliae", "Neapolis", "Antium", "Corinthus", "bellum", "eicio", "gnome", "haruspex", "icon", "moveo", "aniba", "oleum", "speculum", "utinam", "xiphias", "zelus", "porcus_marinus", "Graecia", "operio", "autem", "bos", "helium", "aut", "androgynus", "bovinus", "draco", "equus", "bellicus", "zodiacus", "eques", "formica", "gallina", "porcus", "guerra", "lycophthalmus", "annihilo", "mare", "adalligo", "Aegyptus", "Italia", "Graecus", "tonsor", "oeconomia", "caulis", "homonymus", "illino", "decoctum", "folium", "amicus", "O", "decoquo", "illitus", "sucus", "efficax", "caninus", "sativus", "epiphora", "cauliculus", "tormina", "ulcus", "fimum", "sarcasmus", "caprinus", "vomitio", "inclino", "duo", "tres", "quattuor", "quinque", "primus", "tripus", "septem", "ligatura", "anthropophagus", "octo", "octavus", "unio", "novem", "decem", "chiliometrum", "epigramma", "centum", "mille", "quintus", "nox", "quartus", "tertius", "macropus", "septimus", "nonus", "hippotoxotae", "synonymum", "Iaponia", "phthir", "diphthongus", "ab", "abdo", "abeo", "abhinc", "abicio", "abigo", "aboleo", "abscedo", "sol", "absens", "absisto", "absolvo", "abstinens", "abstineo", "abstuli", "prior", "novies", "smaragdus", "absum", "absurdus", "prae", "abundo", "Tocio", "frater", "eo", "accedo", "res", "secundus", "accendo", "sextus", "quincuplex", "accido", "simplex", "Hoccaido", "Ocinava", "beryllium", "accipio", "Zoroastreus", "Zopyriatim", "lithium", "accommodo", "caerimonia", "dies_Solis", "dies_Lunae", "dies_Martis", "uranium", "Mars", "nex", "accumbo", "Kalendae", "hydrogenium", "Iuppiter", "nux", "accuso", "palladium", "pirata", "acer", "Venus", "terbium", "Saturnus", "homunculus", "sum", "actinium", "Pluto", "daemon", "acerbus", "borum", "volcanus", "diabolus", "magnesium", "Mercurius", "gladius", "acervus", "Achaicus", "ununseptium", "Iuno", "elementum", "cupido", "ignis", "vanitas", "manatus", "neon", "achates", "Demeter", "lacrimo", "Acheron", "argon", "luna", "Minerva", "Achilles", "ununoctium", "lupus", "radon", "ununbium", "ununhexium", "ununpentium", "ununquadium", "acies", "nix", "cornix", "Kyotum", "leo", "Argentina", "Nara", "Ciusium", "unununium", "ununtrium", "tellurium", "barium", "platinum", "berkelium", "Nagasacium", "Fusius", "nomas", "Vindobona", "nobelium", "nomen", "Meacum", "Osaca", "Hirosima", "acriter", "cadmium", "orca", "Varsovia", "Hieus", "Lotharingia", "neptunium")
 val instructionSentences: List<String> = listOf("I think you should", "You gotta", "You better", "You probably should", "You need to")
@@ -30,8 +27,8 @@ class GameFragment : Fragment() {
 
     private var currentElementId: Int = 0
     private var life: Int = 100
-    private var listItemSize: Int = 5
     private var wave: Int = 1
+    private var lastAddedId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +50,6 @@ class GameFragment : Fragment() {
             binding.scoreLabel.text = "1"
 
             life = 100
-            listItemSize = 5
             wave = 1
             setUpGameBoard()
             generateAction()
@@ -70,10 +66,14 @@ class GameFragment : Fragment() {
 
     fun setUpGameBoard() {
 
-        for(i in (1..listItemSize)) {
+        for(i in (1..4)) {
             switches += Element(i, getTitle(), (0..1).random() == 1)
-            buttons += Element(i+listItemSize, getTitle(), false)
         }
+        for(i in (5..8)) {
+            buttons += Element(i, getTitle(), false)
+        }
+
+        lastAddedId = 8
 
         binding.switchRecyclerView.adapter = SwitchAdaptor(switches) { position, isChecked ->
             val el = switches[position]
@@ -129,6 +129,10 @@ class GameFragment : Fragment() {
             generateAction()
             wave++
 
+            if(wave % 5 == 0) {
+                addElement()
+            }
+
             binding.scoreLabel.text = wave.toString()
         }
         else {
@@ -141,6 +145,21 @@ class GameFragment : Fragment() {
                 binding.instructionLabel.text = "Ya dead"
             }
         }
+    }
+
+    fun addElement() {
+        lastAddedId++
+        val switch = Element(lastAddedId, getTitle(), (0..1).random() == 1)
+        lastAddedId++
+        val button = Element(lastAddedId, getTitle(), false)
+
+        println(button.name)
+
+        switches += switch
+        buttons += button
+
+        binding.switchRecyclerView.adapter?.notifyItemInserted(switches.size-1)
+        binding.buttonRecyclerView.adapter?.notifyItemInserted(buttons.size-1)
     }
 
     fun getTitle(): String {
@@ -156,8 +175,8 @@ class GameFragment : Fragment() {
     }
 
     fun clear(): Unit {
-        binding.switchRecyclerView.adapter?.notifyItemRangeRemoved(0, listItemSize)
-        binding.buttonRecyclerView.adapter?.notifyItemRangeRemoved(0, listItemSize)
+        binding.switchRecyclerView.adapter?.notifyItemRangeRemoved(0, switches.size)
+        binding.buttonRecyclerView.adapter?.notifyItemRangeRemoved(0, buttons.size)
 
         switches.clear()
         buttons.clear()
